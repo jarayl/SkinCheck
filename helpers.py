@@ -14,7 +14,7 @@ def doctor_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_type") is None or session.get("user_type") != "Doctor":
-            return redirect("/")
+            return redirect("/") #change later to an error page of access denied
         return f(*args, **kwargs)
 
     return decorated_function
@@ -23,7 +23,7 @@ def patient_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_type") is None or session.get("user_type") != "Patient":
-            return redirect("/")
+            return redirect("/") #change later to error page of access denied
         return f(*args, **kwargs)
 
     return decorated_function

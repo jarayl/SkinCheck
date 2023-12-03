@@ -1,8 +1,13 @@
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from helpers import login_required, doctor_only, patient_only
+
 import sqlite3
+
+db = sqlite3.connect("skincheck.db")
+cur = db.cursor()
 
 app = Flask(__name__)
 
@@ -27,6 +32,15 @@ def index():
 def doctor_login():
     if request.method == "POST":
         #TODO
+        # Ensure patient email was submitted
+        if not request.form.get("email"):
+            return 
+        # Ensure patient password was submitted
+        elif not request.form.get("password"):
+            return 
+        #sql logic to make sure that user exists in db
+
+        return redirect("/doctor/home")
     else:
         return render_template("doctor_login.html")
 
@@ -35,6 +49,16 @@ def doctor_login():
 def patient_login():
     if request.method == "POST":
         #TODO
+        # Ensure patient email was submitted
+        if not request.form.get("email"):
+            return 
+        
+        # Ensure patient password was submitted
+        elif not request.form.get("password"):
+            return 
+        
+        #sql logic to make sure patient exists in db
+        return redirect("/patient/home")
     else:
         return render_template("patient_login.html")
 
@@ -58,18 +82,31 @@ def patient_register():
 @login_required
 @doctor_only
 def doctor_home():
-
+    if request.method == "POST":
+        #form should have value of patient id
+        pId = request.form.get("pId")
+        return redirect(url_for("patient_history", patient_id = pId))
+    else:
+        return render_template("doctor_home.html")
 
 @app.route("/patient/home") #patient history
+@login_required
 @patient_only
 def patient_home():
-
+    return TODO
 
 @app.route("/doctor/upload") #place to upload the image for AI model
 @login_required
 @doctor_only
 def img_upload():
-    
+    return TODO
+
+@app.route("/doctor/<patient_id>")
+@login_required
+@doctor_only
+def patient_hist(patient_id):
+    #some sql stuff that gets the patient history with doctor id and patient id
+    return render_template("patient_history.html")
 
 @app.route("/logout")
 def logout():
