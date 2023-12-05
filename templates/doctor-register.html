@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Doctor Register - Health Portal{% endblock %}
+
+{% block content %}
+    <section id="doctor-register">
+        <h2>Doctor Register</h2>
+        <form>
+            <div class="form-group">
+                <label for="new-doctor-username">Username</label>
+                <input type="text" class="form-control" id="new-doctor-username" placeholder="Choose a username" required>
+            </div>
+            <div class="form-group">
+                <label for="new-doctor-password">Password</label>
+                <input type="password" class="form-control" id="new-doctor-password" placeholder="Choose a password" required>
+            </div>
+            <button type="button" class="btn btn-success" onclick="location.href='#doctor-homepage'">Register</button>
+        </form>
+    </section>
+{% endblock %}

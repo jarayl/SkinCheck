@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Patient Register - Health Portal{% endblock %}
+
+{% block content %}
+    <section id="patient-register">
+        <h2>Patient Register</h2>
+        <form>
+            <div class="form-group">
+                <label for="new-patient-username">Username</label>
+                <input type="text" class="form-control" id="new-patient-username" placeholder="Choose a username" required>
+            </div>
+            <div class="form-group">
+                <label for="new-patient-password">Password</label>
+                <input type="password" class="form-control" id="new-patient-password" placeholder="Choose a password" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="location.href='#patient-homepage'">Register</button>
+        </form>
+    </section>
+{% endblock %}

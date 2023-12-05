@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}General Login - Health Portal{% endblock %}
+
+{% block content %}
+    <section id="general-login">
+        <h2>Welcome to Health Portal</h2>
+        <p>Please choose your role:</p>
+        <button class="btn btn-primary" onclick="location.href='#patient-login'">Login as Patient</button>
+        <button class="btn btn-success" onclick="location.href='#doctor-login'">Login as Doctor</button>
+    </section>
+{% endblock %}
