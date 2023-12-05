@@ -10,6 +10,9 @@ db = sqlite3.connect("skincheck.db")
 cur = db.cursor()
 
 app = Flask(__name__)
+app.secret_key = "JustinJaraySahil"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
 
 #additional functionalities: verify email, password must have some level of security, settings, etc
 Session(app)
@@ -27,7 +30,7 @@ def index():
     else:
         return render_template("index.html")
 
-@app.route("/doctor/login")
+@app.route("/doctor/login", methods=["GET", "POST"])
 @doctor_only
 def doctor_login():
     if request.method == "POST":
@@ -44,7 +47,7 @@ def doctor_login():
     else:
         return render_template("doctor_login.html")
 
-@app.route("/patient/login")
+@app.route("/patient/login", methods=["GET", "POST"])
 @patient_only
 def patient_login():
     if request.method == "POST":
@@ -62,7 +65,7 @@ def patient_login():
     else:
         return render_template("patient_login.html")
 
-@app.route("/doctor/register")
+@app.route("/doctor/register", methods=["GET", "POST"])
 @doctor_only
 def doctor_register():
     if request.method == "POST":
@@ -78,7 +81,7 @@ def patient_register():
     else:
         return render_template("patient_register.html")
 
-@app.route("/doctor/home") #table of patients with uploaded images
+@app.route("/doctor/home", methods=["GET", "POST"]) #table of patients with uploaded images
 @login_required
 @doctor_only
 def doctor_home():
@@ -95,13 +98,13 @@ def doctor_home():
 def patient_home():
     return TODO
 
-@app.route("/doctor/upload") #place to upload the image for AI model
+@app.route("/doctor/upload", methods=["GET", "POST"]) #place to upload the image for AI model
 @login_required
 @doctor_only
 def img_upload():
     return TODO
 
-@app.route("/doctor/<patient_id>")
+@app.route("/doctor/<patient_id>", methods=["GET", "POST"]) #implement downloading image
 @login_required
 @doctor_only
 def patient_hist(patient_id):
@@ -111,6 +114,7 @@ def patient_hist(patient_id):
 @app.route("/logout")
 def logout():
     session.clear()
+    flash("Logout Successful!")
     return redirect("/")
 
 
