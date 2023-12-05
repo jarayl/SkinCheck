@@ -17,11 +17,12 @@ app.config["SESSION_TYPE"] = "filesystem"
 #additional functionalities: verify email, password must have some level of security, settings, etc
 Session(app)
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     session.clear()
     if request.method == "POST":
-        if request.get.form("type") == "Doctor":
+        print(request.form.get("userType"))
+        if request.form.get("userType") == "Doctor":
             session["user_type"] = "Doctor"
             return redirect("/doctor/login")
         else:
@@ -45,7 +46,7 @@ def doctor_login():
 
         return redirect("/doctor/home")
     else:
-        return render_template("doctor_login.html")
+        return render_template("doctor-login.html")
 
 @app.route("/patient/login", methods=["GET", "POST"])
 @patient_only
@@ -63,23 +64,25 @@ def patient_login():
         #sql logic to make sure patient exists in db
         return redirect("/patient/home")
     else:
-        return render_template("patient_login.html")
+        return render_template("patient-login.html")
 
 @app.route("/doctor/register", methods=["GET", "POST"])
 @doctor_only
 def doctor_register():
     if request.method == "POST":
         #TODO
+        return None
     else:
-        return render_template("doctor_register.html")
+        return render_template("doctor-register.html")
 
-@app.route("/patient/register")
+@app.route("/patient/register", methods=["GET", "POST"])
 @patient_only
 def patient_register():
     if request.method == "POST":
         #TODO
+        return None
     else:
-        return render_template("patient_register.html")
+        return render_template("patient-register.html")
 
 @app.route("/doctor/home", methods=["GET", "POST"]) #table of patients with uploaded images
 @login_required
@@ -92,7 +95,7 @@ def doctor_home():
     else:
         return render_template("doctor_home.html")
 
-@app.route("/patient/home") #patient history
+@app.route("/patient/home",  methods=["GET", "POST"]) #patient history
 @login_required
 @patient_only
 def patient_home():
