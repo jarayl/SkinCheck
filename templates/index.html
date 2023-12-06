@@ -1,16 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkinCheck</title>
+  <link href="/static/styles.css" rel="stylesheet">
 </head>
 <body>
 
-  <h1>SkinCheck</h1>
+  <header>
+    <div class="logo-container">
+      <img src=""https://i.imgur.com/dHPDo0m.png"" class="logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <form action="/" method="post" name="type">
-    <button type="submit" name="userType" value="Doctor">I am a doctor</button>
-    <button type="submit" name="userType" value="Patient">I am a patient</button>
-  </form>
+  <div class="content">
+    <h1>SkinCheck</h1>
+
+    <form action="/" method="post" name="type">
+      <button type="submit" name="userType" value="Doctor">I am a doctor</button>
+      <button type="submit" name="userType" value="Patient">I am a patient</button>
+    </form>
+  </div>
 
 </body>
 </html>
