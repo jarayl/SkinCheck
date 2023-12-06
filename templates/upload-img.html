@@ -3,9 +3,15 @@
 {% block title %}Doctor Upload Image - Health Portal{% endblock %}
 
 {% block main %}
-    <h2>Upload Image</h2>
+    <h1>Upload Image</h1>
     <form action="/doctor/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="imageFile" accept="image/*">
+        <label for="images" class="drop-container" id="dropcontainer">
+            <span class="drop-title">Drop files here</span>
+            or
+            <input type="file" name="imageFile" accept="image/*">
+        </label>
         <button type="submit">Upload</button>
     </form>
 {% endblock %}
+
+

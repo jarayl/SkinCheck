@@ -3,5 +3,42 @@
 {% block title %}Patient Home - Health Portal{% endblock %}
 
 {% block main %}
-    
+    <h1>Welcome, {{ name }}</h1>
+    <form id="patienthome" action="/patient/home" method="POST">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-start">Doctor ID</th>
+                    <th class="text-start">Doctor Name</th>
+                    <th class="text-start">Date</th>
+                    <th class="text-start">Diagnosis</th>
+                    <th class="text-start">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in data %}
+                    <tr>
+                        <td class="text-start">{{ d["dId"] }}</td>
+                        <td class="text-start">Dr. {{ d["doctor_name"] }}</td>
+                        <td class="text-start">{{ d["date"] }}</td>
+                        <td class="text-start">
+                            <span class="status-text" data-pid="{{ d['pId'] }}">{{ d["diagnosis"] }}</span>
+                        </td>
+                        <td class="text-start">{{ d["desc"] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.status-text').click(function() {
+                var patientId = $(this).data('pid');
+                $('#patientStatusForm').append('<input type="hidden" name="pId" value="' + patientId + '">');
+                $('#patientStatusForm').submit();
+            });
+        });
+    </script>
 {% endblock %}

@@ -28,7 +28,6 @@ Session(app)
 def index():
     session.clear()
     if request.method == "POST":
-        print(request.form.get("userType"))
         if request.form.get("userType") == "Doctor":
             session["user_type"] = "Doctor"
             return redirect("/doctor/login")
@@ -50,7 +49,6 @@ def doctor_login():
         elif not request.form.get("password"):
             flash("Must submit password!")
             return render_template("doctor-login.html")
-        
         # SQL logic to verify the doctor's credentials
         con = sqlite3.connect("skincheck.db")
         con.row_factory = sqlite3.Row  # Set row factory to fetch rows as dictionaries
@@ -164,7 +162,7 @@ def patient_register():
 
         try:
             # Validate Date of Birth format
-            dob_date = datetime.strptime(dob, '%Y-%m-%d')
+            dob_date = datetime.datetime.strptime(dob, '%Y-%m-%d')
         except ValueError:
             flash('Invalid Date of Birth format! Please use YYYY-MM-DD.')
             return render_template('patient-register.html')
@@ -219,14 +217,15 @@ def doctor_home():
     doc_name = doctor["name"]
 
     # Get all patient info associated with the current doctor
-    cur.execute("SELECT patients.pId, patients.pEmail, patients.name AS pat_name, patients.dob, patients.gender AS sex, patients.status FROM patients INNER JOIN docPatRel ON patients.pId = docPatRel.pId WHERE docPatRel.dId = ?", (session["user_id"],))
+    cur.execute("SELECT patients.pId, patients.pEmail, patients.name AS pat_name, patients.dob, patients.sex AS sex, patients.status FROM patients INNER JOIN docPatRel ON patients.pId = docPatRel.pId WHERE docPatRel.dId = ?", (session["user_id"],))
     patients = cur.fetchall()
 
     con.close()
 
     if request.method == "POST":
         p_id = request.form.get("pId")
-        return redirect(url_for("patient-history", patient_id=p_id))
+        print(p_id)
+        return redirect(url_for("patient_history", patient_id=p_id))
     else:
         return render_template("doctor-home.html", name=doc_name, patients=patients)
 
@@ -234,7 +233,25 @@ def doctor_home():
 @login_required
 @patient_only
 def patient_home():
-    return None
+    con = sqlite3.connect("skincheck.db")
+    con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+    cur = con.cursor()
+    
+    # Get doctor's name
+    cur.execute("SELECT name FROM patients WHERE pId = ?", (session["user_id"],))
+    patient = cur.fetchone()
+    pat_name = patient["name"]
+
+    # Get all data associated with the current patient
+    cur.execute("SELECT doctors.name AS doctor_name, doctors.dId AS dId, patients.pId AS patient_id, data.diagnosis, data.desc, data.date FROM doctors JOIN docPatRel ON doctors.dId = docPatRel.dId JOIN patients ON docPatRel.pId = patients.pId JOIN  data ON doctors.dId = data.dId AND patients.pId = data.pId WHERE patients.pId = ?", (session["user_id"],))
+    data = cur.fetchall()
+    con.close()
+
+    if request.method == "POST":
+        p_id = request.form.get("pId")
+        return redirect(url_for("patient-history", patient_id=p_id))
+    else:
+        return render_template("patient-home.html", name=pat_name, data = data)
 
 @app.route("/doctor/upload", methods=["GET", "POST"])
 @login_required
@@ -300,6 +317,9 @@ def img_uploaded():
         doc_com = request.form.get('comments')
         pEmail = request.form.get('patientEmail')
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if not all((image_data1, image_data2, network_prediction, network_confidence)):
+            flash('Error loading in model data!')
+            return redirect("/doctor/upload")
 
         if not all((doc_com, pEmail)):
             flash('All fields are required!')
@@ -323,14 +343,21 @@ def img_uploaded():
                 cur.execute("INSERT INTO docPatRel (dId, pId) VALUES (?, ?)", (session.get('user_id'), patient_id[0]))
                 con.commit()
 
+                # Update the status in the patients table
+                cur.execute("UPDATE patients SET status = ? WHERE pId = ?", (network_prediction, patient_id[0]))
+                con.commit()
+
+                #close connection
                 con.close()
+
+                #flash message to user
                 flash("Data uploaded successfully!")
 
-                # Clear session variables related to image data
-                session.pop('image_data1', None)  
-                session.pop('image_data2', None) 
-                session.pop('network_prediction', None) 
-                session.pop('network_confidence', None) 
+                # # Clear session variables related to image data
+                # session.pop('image_data1', None)  
+                # session.pop('image_data2', None) 
+                # session.pop('network_prediction', None) 
+                # session.pop('network_confidence', None) 
 
                 return redirect('/doctor/home')
 
@@ -374,7 +401,7 @@ def drop_patient():
             cur.execute("DELETE FROM docPatRel WHERE dId = ? AND pId = ?", (session["user_id"], patient_id))
             con.commit()
         except sqlite3.Error as e:
-            flash("Error deleting entry:")
+            flash("Error dropping patient!")
             return render_template("doctor-drop-patient.html", patients=patients)
         finally:
             con.close()
@@ -387,13 +414,52 @@ def drop_patient():
 @login_required
 @doctor_only
 def add_patient():
-    
-    return TODO
+    con = sqlite3.connect("skincheck.db")
+    con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+    cur = con.cursor()
+
+    if request.method == "POST":
+
+        pEmail = request.form.get("pEmail")
+
+        if not pEmail:
+            flash ("Must provide patient email!")
+            return render_template("doctor-add-patient.html")
+
+        cur.execute("SELECT pId FROM patients WHERE pEmail = ?", (pEmail,))
+        patient = cur.fetchone()
+
+        if not patient:
+            flash("Patient does not exist in database!")
+            return render_template("doctor-add-patient.html")
+        
+        pId = patient["pId"]
+
+        cur.execute("SELECT * FROM docPatRel WHERE dId = ? AND pId = ?", (session["user_id"], pId))
+        rels = cur.fetchall()
+
+        if not rels:
+            try:
+                cur.execute("INSERT INTO docPatRel (dId, pId) VALUES (?,?)", (session["user_id"], pId))
+                con.commit()
+            except sqlite3.Error as e:
+                flash("Error adding patient")
+                return render_template("doctor-add-patient.html")
+            finally:
+                con.close()
+        else:
+            flash("Already a Patient")
+            con.close()
+            return render_template("doctor-add-patient.html")
+        
+        return redirect("/doctor/home")
+    else:
+        return render_template("doctor-add-patient.html")
 
 @app.route("/doctor/<patient_id>", methods=["GET", "POST"])
 @login_required
 @doctor_only
-def patient_hist(patient_id):
+def patient_history(patient_id):
     #some sql stuff that gets the patient history with doctor id and patient id
     return render_template("patient_history.html")
 

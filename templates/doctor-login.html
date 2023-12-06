@@ -5,14 +5,45 @@
 {% block main %}
     <section id="doctor-login">
         <h2>Doctor Login</h2>
-        <form action="/doctor/login" method="post">
-            <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email">
+        <div class="container">
+            <div class="form-wrapper">
+              <div class="image-container">
+                <img src="/static/logo.png" alt="logo" />
+              </div>
+              <div class="form-content">
+                <form action="/doctor/login" method="post">
+                    <div class="form-group">
+                        <div class="form-field" id="email">
+                            <div>
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                id="email"
+                                onfocus="addBoxShadow('email')"
+                                onblur="removeBoxShadow('email')"
+                            />
+                        </div>
+                        <div class="form-field" id="password">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                name="password"
+                                id="password"
+                                onfocus="addBoxShadow('password')"
+                                onblur="removeBoxShadow('password')"
+                            />
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Login</button> <!-- Changed type to "submit" -->
+                </form>
+              </div>
             </div>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
-            </div>
-            <button class="btn btn-primary" type="submit">Log In</button>
-        </form>
+          </div>
     </section>
 {% endblock %}
