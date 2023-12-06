@@ -6,15 +6,13 @@
     <section id="doctor-login">
         <h2>Doctor Login</h2>
         <form action="/doctor/login" method="post">
-            <div class="form-group">
-                <label for="doctor-username">Username</label>
-                <input type="text" class="form-control" id="doctor-username" placeholder="Enter your username" required>
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email">
             </div>
-            <div class="form-group">
-                <label for="doctor-password">Password</label>
-                <input type="password" class="form-control" id="doctor-password" placeholder="Enter your password" required>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
             </div>
-            <button type="button" class="btn btn-success" onclick="location.href='#doctor-homepage'">Login</button>
+            <button class="btn btn-primary" type="submit">Log In</button>
         </form>
     </section>
 {% endblock %}

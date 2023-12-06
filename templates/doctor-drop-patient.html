@@ -1,0 +1,18 @@
+{% extends "doctor-layout.html" %}
+
+{% block title %}Doctor Drop Patient - Health Portal{% endblock %}
+
+{% block main %}
+    <section id="drop-patient">
+        <h2>Drop Patient</h2>
+        <form action="/doctor/drop_patient" method="post">
+            <select id="patient" name="patient" required>
+                <option value="" disabled selected>Patient Name</option>
+                {% for patient in patients %}
+                    <option value= "{{ patient['pId'] }}">{{ patient["pat_name"] }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" type="submit">Drop</button>
+        </form>
+    </section>
+{% endblock %}
