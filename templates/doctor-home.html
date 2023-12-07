@@ -4,43 +4,30 @@
 
 {% block main %}
     <h1>Welcome, Dr. {{ name }}</h1>
-    <form id="doctorhome" action="/doctor/home" method="POST">
-        <table class="table table-striped">
-            <thead>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Patient ID</th>
+                <th class="text-start">Email</th>
+                <th class="text-start">Name</th>
+                <th class="text-start">Date of Birth</th>
+                <th class="text-start">Sex</th>
+                <th class="text-start">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
                 <tr>
-                    <th class="text-start">Patient ID</th>
-                    <th class="text-start">Email</th>
-                    <th class="text-start">Name</th>
-                    <th class="text-start">Date of Birth</th>
-                    <th class="text-start">Sex</th>
-                    <th class="text-start">Status</th>
+                    <td class="text-start">{{ patient["pId"] }}</td>
+                    <td class="text-start">{{ patient["pEmail"] }}</td>
+                    <td class="text-start">{{ patient["pat_name"] }}</td>
+                    <td class="text-start">{{ patient["dob"] }}</td>
+                    <td class="text-start">{{ patient["sex"] }}</td>
+                    <td class="text-start">
+                        <a href="/doctor/{{ patient['pId'] }}" class="status-text">{{ patient["status"] }}</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for patient in patients %}
-                    <tr>
-                        <td class="text-start">{{ patient["pId"] }}</td>
-                        <td class="text-start">{{ patient["pEmail"] }}</td>
-                        <td class="text-start">{{ patient["pat_name"] }}</td>
-                        <td class="text-start">{{ patient["dob"] }}</td>
-                        <td class="text-start">{{ patient["sex"] }}</td>
-                        <td class="text-start">
-                            <span class="status-text" data-pid="{{ patient['pId'] }}">{{ patient["status"] }}</span>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.status-text').click(function() {
-                var patientId = $(this).data('pid');
-                $('#patientStatusForm').append('<input type="hidden" name="pId" value="' + patientId + '">');
-                $('#patientStatusForm').submit();
-            });
-        });
-    </script>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -12,7 +12,7 @@
                     <th class="text-start">Doctor Name</th>
                     <th class="text-start">Date</th>
                     <th class="text-start">Diagnosis</th>
-                    <th class="text-start">Description</th>
+                    <th class="text-start">Comments</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,9 +22,20 @@
                         <td class="text-start">Dr. {{ d["doctor_name"] }}</td>
                         <td class="text-start">{{ d["date"] }}</td>
                         <td class="text-start">
-                            <span class="status-text" data-pid="{{ d['pId'] }}">{{ d["diagnosis"] }}</span>
+                            <a href="/patient/{{ d['id'] }}">{{ d["diagnosis"] }}</a>
                         </td>
-                        <td class="text-start">{{ d["desc"] }}</td>
+                        <td class="text-start">
+                            <span 
+                                class="d-inline-block text-truncate" 
+                                style="max-width: 150px;" 
+                                tabindex="0" 
+                                data-bs-toggle="popover" 
+                                data-bs-trigger="focus" 
+                                title="Full Comment" 
+                                data-bs-content="{{ d['desc'] }}">
+                                {{ d['desc'] | truncate(30) }}
+                            </span>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -34,11 +45,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.status-text').click(function() {
-                var patientId = $(this).data('pid');
-                $('#patientStatusForm').append('<input type="hidden" name="pId" value="' + patientId + '">');
-                $('#patientStatusForm').submit();
-            });
+            $('[data-bs-toggle="popover"]').popover();
         });
     </script>
 {% endblock %}

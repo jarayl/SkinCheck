@@ -15,20 +15,18 @@
         <link href="/static/favicon.ico" rel="icon">
 
         <link href="/static/styles.css" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/77ddce289f.js" crossorigin="anonymous"></script>
 
         <title>SkinCheck: {% block title %}{% endblock %}</title>
 
     </head>
 
     <body>
-
-        <nav class="bg-light border navbar navbar-expand-md navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/patient/home"><span class="blue">C</span><span class="red">$</span><span class="yellow">5</span><span class="green">0</span> <span class="red">SkinCheck</span></a>
-                <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbar">
+        <header>
+        <img src="/static/logo.png" alt="Logo" id="header-logo">
+            <nav class="navbar navbar-expand-md navbar-light" style="background-color: transparent;">
+                <div class="container-nav">
+                    <div class="collapse navbar-collapse" id="navbar">
                     {% if session["user_id"] %}
                         <ul class="navbar-nav me-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/patient/home">Home</a></li>
@@ -38,13 +36,15 @@
                         </ul>
                     {% else %}
                         <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                             <li class="nav-item"><a class="nav-link" href="/patient/register">Register</a></li>
                             <li class="nav-item"><a class="nav-link" href="/patient/login">Log In</a></li>
                         </ul>
                     {% endif %}
                 </div>
-            </div>
+            
         </nav>
+    </header>
 
         {% if get_flashed_messages() %}
             <header>

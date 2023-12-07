@@ -4,15 +4,31 @@
 
 {% block main %}
     <section id="drop-patient">
-        <h2>Drop Patient</h2>
-        <form action="/doctor/drop_patient" method="post">
-            <select id="patient" name="patient" required>
-                <option value="" disabled selected>Patient Name</option>
-                {% for patient in patients %}
-                    <option value= "{{ patient['pId'] }}">{{ patient["pat_name"] }}</option>
-                {% endfor %}
-            </select>
-            <button class="btn btn-primary" type="submit">Drop</button>
-        </form>
+        <h1>Drop Patient</h1>
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="image-container">
+                    <img src="/static/logo.png" alt="SkinCheck Logo" />
+                </div>
+                <div class="form-content">
+                    <form action="/doctor/drop_patient" method="post">
+                        <div class="form-group">
+                            <div class="form-field" id="patient-field">
+                                <div>
+                                    <i class="fa fa-user-times"></i>
+                                </div>
+                                <select id="patient" name="patient" class="patient-select" required>
+                                    <option value="" disabled selected>Select Patient</option>
+                                    {% for patient in patients %}
+                                        <option value="{{ patient['pId'] }}">{{ patient["pat_name"] }}</option>
+                                    {% endfor %}
+                                </select>                                
+                            </div>
+                        </div>
+                        <button class="btn btn-success" type="submit">Drop</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
 {% endblock %}

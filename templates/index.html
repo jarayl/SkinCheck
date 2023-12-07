@@ -9,24 +9,32 @@
 <body>
 
   <header>
-    <div class="logo-container">
-      <img src=""https://i.imgur.com/dHPDo0m.png"" class="logo">
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#about">About Us</a></li>
-      </ul>
-    </nav>
+    <img src="/static/logo.png" alt="Logo" id="header-logo">
   </header>
 
-  <div class="content">
-    <h1>SkinCheck</h1>
+<div class="content">
+  <h1>SkinCheck</h1>
 
-    <form action="/" method="post" name="type">
-      <button type="submit" name="userType" value="Doctor">I am a doctor</button>
-      <button type="submit" name="userType" value="Patient">I am a patient</button>
-    </form>
+  <div class="info-container">
+    <div class="info-left">
+      <h2>What is SkinCheck?</h2>
+      <form action="/about-us" method="get">
+        <button type="submit" class="btn-form btn-large">Learn More</button>
+      </form>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="info-right">
+      <h2>Log in Here!</h2>
+      <form action="/" method="post" name="type">
+        <button type="submit" name="userType" value="Doctor">I am a doctor</button>
+        <button type="submit" name="userType" value="Patient">I am a patient</button>
+      </form>
+    </div>
   </div>
+
+</div>
 
 </body>
 </html>

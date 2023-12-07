@@ -3,16 +3,50 @@
 {% block title %}Patient Login - Health Portal{% endblock %}
 
 {% block main %}
-    <section id="patient-login">
-        <h2>Patient Login</h2>
-        <form action="/patient/login" method="post">
-            <div class="mb-3">
-                <input autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required>
+<section id="patient-login">
+    <h2>Patient Login</h2>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="image-container">
+                <img src="/static/logo.png" alt="logo" />
             </div>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
+            <div class="form-content">
+                <form action="/patient/login" method="post">
+                    <div class="form-group">
+                        <div class="form-field" id="patient-email">
+                            <div>
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                id="email"
+                                onfocus="addBoxShadow('patient-email')"
+                                onblur="removeBoxShadow('patient-email')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="patient-password">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                name="password"
+                                id="password"
+                                onfocus="addBoxShadow('patient-password')"
+                                onblur="removeBoxShadow('patient-password')"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Log In</button>
+                </form>
             </div>
-            <button class="btn btn-primary" type="submit">Log In</button>
-        </form>
-    </section>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - SkinCheck</title>
+  <link href="/static/styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <img src="/static/logo.png" alt="Logo" id="header-logo">
+    <nav class="navbar navbar-expand-md navbar-light" style="background-color: transparent;">
+        <div class="container-nav">
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+  </header>
+
+  <div class="content">
+    <h1>About Us - SkinCheck</h1>
+
+    <section class="info-section">
+      <h2>Our Mission</h2>
+      <p>
+        At SkinCheck, our mission is to automate skin cancer diagnosis, democratizing access to medicine. We strive to make early detection of skin cancer accessible to everyone, using advanced technology to provide quick and reliable diagnoses.
+      </p>
+    </section>
+
+    <section class="info-section">
+      <h2>Methodology</h2>
+      <p>
+        Our methodology is centered around a state-of-the-art machine learning model that analyzes skin images to detect signs of cancer. This model is constantly evolving, learning from a vast database of skin images to improve accuracy and provide trustworthy results.
+      </p>
+
+      <div class="image-gallery">
+        <img src="/static/image1.png" alt="Confusion Matrix">
+        <img src="/static/image2.png" alt="Precision Recall Curve">
+        <img src="/static/image3.jpg" alt="AI report">
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let currentImageIndex = 0;
+    const images = document.querySelectorAll('.image-gallery img');
+    setInterval(() => {
+      images.forEach(img => img.style.display = 'none');
+      images[currentImageIndex].style.display = 'block';
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+    }, 3000); // Change image every 3 seconds
+  </script>
+
+</body>
+</html>

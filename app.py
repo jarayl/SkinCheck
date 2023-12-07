@@ -1,10 +1,13 @@
+#Import necessary app modules
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+#Import helper modules or files
 from helpers import login_required, doctor_only, patient_only
 import datetime
 
+#Import necessary modules used in machine learning and image processing 
 import model_1
 from io import BytesIO
 import base64
@@ -12,30 +15,47 @@ from keras.preprocessing import image
 from PIL import Image
 import numpy as np
 from keras.models import load_model
-import cv2
 
+#Import database management module
 import sqlite3
 
+#Initialize flask app
 app = Flask(__name__)
+
+#App configuration
 app.secret_key = "JustinJaraySahil"
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
-#additional functionalities: verify email, settings, etc
+#Initialize session
 Session(app)
+
+#Make truncating helper function for html formatting
+def truncate(s, length, end='...'):
+    #truncate string to given length
+    if len(s) > length:
+        return s[:length] + end
+    return s
+
+# Register truncating filter
+app.template_filter('truncate')(truncate)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    #Clear session
     session.clear()
     if request.method == "POST":
+        #Save the user type (doctor or patient) into session variable
         if request.form.get("userType") == "Doctor":
             session["user_type"] = "Doctor"
+            #Redirect to  
             return redirect("/doctor/login")
         else:
             session["user_type"] = "Patient"
             return redirect("/patient/login")
     else:
         return render_template("index.html")
+
 
 @app.route("/doctor/login", methods=["GET", "POST"])
 @doctor_only
@@ -82,7 +102,7 @@ def patient_login():
         
         # SQL logic to verify the patient's credentials
         con = sqlite3.connect("skincheck.db")
-        con.row_factory = sqlite3.Row  # Set row factory to fetch rows as dictionaries
+        con.row_factory = sqlite3.Row 
         cur = con.cursor()
         cur.execute("SELECT * FROM patients WHERE pEmail = ?", (request.form.get("email"),))
         row = cur.fetchone()
@@ -121,7 +141,7 @@ def doctor_register():
 
         try:
             con = sqlite3.connect("skincheck.db")
-            con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+            con.row_factory = sqlite3.Row
             cur = con.cursor()
             cur.execute("INSERT INTO doctors (password, name, dEmail) VALUES (?, ?, ?)", (generate_password_hash(password), name, email))
             con.commit()
@@ -203,12 +223,16 @@ def patient_register():
     else:
         return render_template('patient-register.html')
 
-@app.route("/doctor/home", methods=["GET", "POST"]) #table of patients with uploaded images
+@app.route('/about-us')
+def about_us():
+    return render_template('about-us.html')
+
+@app.route("/doctor/home", methods=["GET", "POST"])
 @login_required
 @doctor_only
 def doctor_home():
     con = sqlite3.connect("skincheck.db")
-    con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+    con.row_factory = sqlite3.Row
     cur = con.cursor()
     
     # Get doctor's name
@@ -243,7 +267,7 @@ def patient_home():
     pat_name = patient["name"]
 
     # Get all data associated with the current patient
-    cur.execute("SELECT doctors.name AS doctor_name, doctors.dId AS dId, patients.pId AS patient_id, data.diagnosis, data.desc, data.date FROM doctors JOIN docPatRel ON doctors.dId = docPatRel.dId JOIN patients ON docPatRel.pId = patients.pId JOIN  data ON doctors.dId = data.dId AND patients.pId = data.pId WHERE patients.pId = ?", (session["user_id"],))
+    cur.execute("SELECT doctors.name AS doctor_name, doctors.dId AS dId, patients.pId AS patient_id, data.diagnosis, data.desc, data.date, data.id AS id FROM doctors JOIN docPatRel ON doctors.dId = docPatRel.dId JOIN patients ON docPatRel.pId = patients.pId JOIN  data ON doctors.dId = data.dId AND patients.pId = data.pId WHERE patients.pId = ?", (session["user_id"],))
     data = cur.fetchall()
     con.close()
 
@@ -339,9 +363,13 @@ def img_uploaded():
                             (session.get('user_id'), patient_id[0], network_prediction, doc_com, date, image_data1, image_data2))
                 con.commit()
 
-                # Update docPatRel table with dId and pId
-                cur.execute("INSERT INTO docPatRel (dId, pId) VALUES (?, ?)", (session.get('user_id'), patient_id[0]))
-                con.commit()
+                # Check if an entry exists in docPatRel with the current dId and pId
+                cur.execute("SELECT * FROM docPatRel WHERE dId = ? AND pId = ?", (session.get('user_id'), patient_id[0]))
+                exists = cur.fetchone()
+                if not exists:
+                    # Insert into docPatRel if the entry does not exist
+                    cur.execute("INSERT INTO docPatRel (dId, pId) VALUES (?, ?)", (session.get('user_id'), patient_id[0]))
+                    con.commit()
 
                 # Update the status in the patients table
                 cur.execute("UPDATE patients SET status = ? WHERE pId = ?", (network_prediction, patient_id[0]))
@@ -456,15 +484,84 @@ def add_patient():
     else:
         return render_template("doctor-add-patient.html")
 
-@app.route("/doctor/<patient_id>", methods=["GET", "POST"])
+@app.route("/doctor/<patient_id>", methods=["GET"])
 @login_required
 @doctor_only
 def patient_history(patient_id):
-    #some sql stuff that gets the patient history with doctor id and patient id
-    return render_template("patient_history.html")
+    try:
+        con = sqlite3.connect("skincheck.db")
+        con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+        cur = con.cursor()
+
+        # Fetch patient history
+        cur.execute("SELECT id, diagnosis, date, desc, img, overlay FROM data WHERE dId = ? AND pId = ?", (session["user_id"], patient_id))
+
+        # Store data into pat_hist
+        pat_hist = cur.fetchall()
+
+    #Error handling
+    except sqlite3.Error as e:
+        flash(f"An error occurred: {e}")
+        return redirect(url_for("/doctor/home"))
+    finally:
+        con.close()
+
+    # Pass pat_hist to the template
+    return render_template("doctor-patient-history.html", pat_hist=pat_hist)
+
+@app.route("/patient/<id>", methods=["GET"])
+@login_required
+@patient_only
+def diagnosis(id):
+    try:
+        con = sqlite3.connect("skincheck.db")
+        con.row_factory = sqlite3.Row  # Fetch rows as dictionaries
+        cur = con.cursor()
+
+        # Fetch patient history
+        cur.execute("SELECT diagnosis, date, desc, img, overlay FROM data WHERE id = ?", (id,))
+
+        # Store data into pat_hist
+        diagnosis = cur.fetchone()
+
+    #Error handling
+    except sqlite3.Error as e:
+        flash(f"An error occurred: {e}")
+        return redirect(url_for("/patient/home"))
+    finally:
+        con.close()
+
+    # Pass pat_hist to the template
+    return render_template("patient-diagnosis.html", diagnosis=diagnosis)
+
+
+@app.route("/doctor/delete/<id>", methods=["POST"])
+@login_required
+@doctor_only
+def delete_data(id):
+    try:
+        con = sqlite3.connect("skincheck.db")
+        cur = con.cursor()
+
+        # Delete the data from data table
+        cur.execute("DELETE FROM data WHERE id = ?", (id,))
+
+        # Commit  changes
+        con.commit()
+    except sqlite3.Error as e:
+        flash(f"An error occurred: {e}")
+        return redirect("/doctor/home")
+    
+    finally:
+        con.close()
+
+    flash("Record deleted successfully.")
+    return redirect("/doctor/home")
+
 
 @app.route("/logout")
 def logout():
+    # Clear the session variables stored
     session.clear()
     flash("Logout Successful!")
     return redirect("/")

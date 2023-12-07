@@ -3,32 +3,101 @@
 {% block title %}Patient Register - Health Portal{% endblock %}
 
 {% block main %}
-    <section id="patient-register">
-        <h2>Patient Register</h2>
-        <form action="/patient/register" method="post">
-            <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Name" type="text" required>
+<section id="patient-register">
+    <h2>Patient Register</h2>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="image-container">
+                <img src="/static/logo.png" alt="SkinCheck Logo" />
             </div>
-            <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required>
+            <div class="form-content">
+                <form action="/patient/register" method="post">
+                    <div class="form-group">
+                        <div class="form-field" id="patient-name-field">
+                            <div>
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                name="name"
+                                id="name"
+                                onfocus="addBoxShadow('patient-name-field')"
+                                onblur="removeBoxShadow('patient-name-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="patient-email-field">
+                            <div>
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                id="email"
+                                onfocus="addBoxShadow('patient-email-field')"
+                                onblur="removeBoxShadow('patient-email-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="dob-field">
+                            <div>
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input
+                                type="date"
+                                placeholder="Date of Birth"
+                                name="dob"
+                                id="dob"
+                                onfocus="addBoxShadow('dob-field')"
+                                onblur="removeBoxShadow('dob-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="sex-field">
+                            <div>
+                                <i class="fa fa-venus-mars"></i>
+                            </div>
+                            <select id="sex" name="sex" required>
+                                <option value="" disabled selected>Sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="unspecified">Unspecified</option>
+                            </select>
+                        </div>
+                        <div class="form-field" id="patient-password-field">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                name="password"
+                                id="password"
+                                onfocus="addBoxShadow('patient-password-field')"
+                                onblur="removeBoxShadow('patient-password-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="confirm-password-field">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                name="confirmation"
+                                onfocus="addBoxShadow('confirm-password-field')"
+                                onblur="removeBoxShadow('confirm-password-field')"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Register</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="dob">Date of Birth</label>
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="dob" name="dob" placeholder="Date of Birth" type="date" required>
-            </div>
-            <select id="sex" name="sex" required>
-                <option value="" disabled selected>Sex</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="unspecified">Unspecified</option>
-            </select>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
-            </div>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password" required>
-            </div>
-            <button class="btn btn-primary" type="submit">Register</button>
-        </form>
-    </section>
+        </div>
+    </div>
+</section>
 {% endblock %}

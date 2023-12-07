@@ -3,22 +3,77 @@
 {% block title %}Doctor Register - Health Portal{% endblock %}
 
 {% block main %}
-    <section id="doctor-register">
-        <h2>Doctor Register</h2>
-        <form action="/doctor/register" method="post">
-            <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Name" type="text" required>
+<section id="doctor-register">
+    <h2>Doctor Register</h2>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="image-container">
+                <img src="/static/logo.png" alt="SkinCheck Logo" />
             </div>
-            <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="email" required>
+            <div class="form-content">
+                <form action="/doctor/register" method="post">
+                    <div class="form-group">
+                        <div class="form-field" id="name-field">
+                            <div>
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                name="name"
+                                id="name"
+                                onfocus="addBoxShadow('name-field')"
+                                onblur="removeBoxShadow('name-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="email-field">
+                            <div>
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                name="email"
+                                id="email"
+                                onfocus="addBoxShadow('email-field')"
+                                onblur="removeBoxShadow('email-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="password-field">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                name="password"
+                                id="password"
+                                onfocus="addBoxShadow('password-field')"
+                                onblur="removeBoxShadow('password-field')"
+                                required
+                            />
+                        </div>
+                        <div class="form-field" id="confirm-password-field">
+                            <div>
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                name="confirmation"
+                                onfocus="addBoxShadow('confirm-password-field')"
+                                onblur="removeBoxShadow('confirm-password-field')"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Register</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
-            </div>
-            <div class="mb-3">
-                <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password" required>
-            </div>
-            <button class="btn btn-primary" type="submit">Register</button>
-        </form>
-    </section>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

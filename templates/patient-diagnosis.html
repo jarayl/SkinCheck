@@ -1,0 +1,52 @@
+{% extends "patient-layout.html" %}
+
+{% block title %}Patient Diagnosis - Health Portal{% endblock %}
+
+{% block main %}
+    <h2 class="mb-4">Patient Diagnosis</h2>
+    <div class="container">
+        {% if diagnosis %}
+            <table class="table">
+                <tr>
+                    <td class="text-center">
+                        <p class="fw-bold">Diagnostic Image</p>
+                        <img src="data:image/png;base64,{{ diagnosis['img'] }}" alt="Diagnostic Image" class="img-fluid">
+                    </td>
+
+                    <td class="text-center">
+                        <p class="fw-bold">Overlay Image</p>
+                        <img src="data:image/png;base64,{{ diagnosis['overlay'] }}" alt="Overlay Image" class="img-fluid">
+                    </td>
+
+                    <td>
+                        <p><strong>Diagnosis:</strong> {{ diagnosis['diagnosis'] }}</p>
+                        <p><strong>Date:</strong> {{ diagnosis['date'] }}</p>
+                        <p><strong>Comments:</strong><br>
+                            <span 
+                                class="text-truncate d-inline-block" 
+                                style="max-width: 150px;" 
+                                tabindex="0" 
+                                data-bs-toggle="popover" 
+                                data-bs-trigger="focus" 
+                                title="Full Description" 
+                                data-bs-content="{{ diagnosis['desc'] }}">
+                                {{ diagnosis['desc'] | truncate(500) }}
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No diagnosis record found.
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-bs-toggle="popover"]').popover();
+        });
+    </script>
+{% endblock %}

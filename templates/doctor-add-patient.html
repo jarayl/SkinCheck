@@ -4,10 +4,34 @@
 
 {% block main %}
     <section id="add-patient">
-        <h2>Add Patient</h2>
-        <form action="/doctor/add_patient" method="post">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="pEmail" name="pEmail" placeholder="Patient Email" type="email" required>
-            <button class="btn btn-primary" type="submit">Add Patient</button>
-        </form>
+        <h1>Add Patient</h1>
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="image-container">
+                    <img src="/static/logo.png" alt="SkinCheck Logo" />
+                </div>
+                <div class="form-content">
+                    <form action="/doctor/add_patient" method="post">
+                        <div class="form-group">
+                            <div class="form-field" id="pEmail-field">
+                                <div>
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <input
+                                    type="email"
+                                    placeholder="Patient Email"
+                                    name="pEmail"
+                                    id="pEmail"
+                                    onfocus="addBoxShadow('pEmail-field')"
+                                    onblur="removeBoxShadow('pEmail-field')"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <button class="btn btn-success" type="submit">Add Patient</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </section>
 {% endblock %}
