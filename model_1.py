@@ -30,30 +30,32 @@ INPUT_SHAPE = (DENSENET169_IMG_WIDTH, DENSENET169_IMG_HEIGHT, CHANNELS)
 PERCENTAGE_FACTOR = 100;
 PERCENT_CONFIDENCE_TRUNCATION = 5
 CLASS_THRESHOLD = 0.5
+GRAD_CAM_INTENSITY_MULTIPLIER = 180
 
 CLASSES = ['BENIGN', 'MALIGNANT']
+
 
 def grad_CAM(model, img, intensity_factor):
     with GradientTape() as tape:
         # ResNet-50V2 had the most accurate/precise visualizations for Grad-CAM
-        last_conv_layer = model.get_layer('conv5_block3_out')
+        last_conv_layer = model.get_layer('conv5_block3_out') # find last convolutional layer from the network (where filters/activations are strongest)
         iterate = Model([model.inputs], [model.output, last_conv_layer.output])
         model_out, last_conv_layer = iterate(img.reshape(1, RESNET50V2_IMG_WIDTH, RESNET50V2_IMG_HEIGHT, CHANNELS))
         class_out = model_out[:, np.argmax(model_out[0])]
         grads = tape.gradient(class_out, last_conv_layer)
         pooled_grads = K.mean(grads, axis=(0, 1, 2))
 
-    heatmap = tf.reduce_mean(tf.multiply(pooled_grads, last_conv_layer), axis=-1)
-    heatmap = np.maximum(heatmap, 0)
+    heatmap = tf.reduce_mean(tf.multiply(pooled_grads, last_conv_layer), axis=-1) # Determine areas of strong activation
+    heatmap = np.maximum(heatmap, 0) # intensify "hot regions"
     np.seterr(divide='ignore', invalid='ignore')
-    heatmap /= np.max(heatmap)
-    heatmap = heatmap.reshape(10, 10)
+    heatmap /= np.max(heatmap) # constrain pixel range [0, 1]
+    heatmap = heatmap.reshape(10, 10) # condense heatmap
 
     heatmap = cv2.resize(heatmap, (img.shape[1], img.shape[0]))
     colormap = cv2.applyColorMap(np.uint8(heatmap * 255), cv2.COLORMAP_JET)
 
     dimmed_heatmap = colormap * intensity_factor
-    superimposed_img = ((dimmed_heatmap + img) * 180).astype(np.uint8)
+    superimposed_img = ((dimmed_heatmap + img) * GRAD_CAM_INTENSITY_MULTIPLIER).astype(np.uint8) # overlay heatmap on top of original image
 
     return superimposed_img
 

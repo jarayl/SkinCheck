@@ -3,40 +3,33 @@
 {% block title %}Doctor Upload Image - Health Portal{% endblock %}
 
 {% block main %}
+    <h1 class="text-center">Model Result</h1>
     <div class="container">
-        <h1 class="text-center">Model Result</h1>
-
-        <!-- Row for Images and Diagnosis Information -->
-        <div class="row mt-4">
-            <!-- Column for Images -->
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-6 text-center">
-                        <h2>Preprocessed Image</h2>
-                        <img src="data:image/png;base64,{{ resized_original }}" alt="resized original" class="img-fluid rounded">
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <h2>Gradient-Based Class Activation Map</h2>
-                        <img src="data:image/png;base64,{{ overlay }}" alt="grad map" class="img-fluid rounded">
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <h2>Preprocessed Original Image<br></h2>
+                <img src="data:image/png;base64,{{ resized_original }}" alt="resized original" class="img-fluid rounded">
             </div>
 
-            <!-- Column for Diagnosis Information -->
-            <div class="col-lg-4">
+            <div class="col-md-6 text-center">
+                <h2>Gradient-Based Class Activation Map</h2>
+                <img src="data:image/png;base64,{{ overlay }}" alt="grad map" class="img-fluid rounded">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
                 <h3>Model Prediction Information</h3>
                 <p><strong>Diagnosis:</strong> <span class="font-weight-bold">{{ prediction }}</span></p>
                 <p><strong>Confidence:</strong> {{ confidence }}%</p>
 
-                <!-- Form for Email and Comments -->
                 <form action="/doctor/uploaded" method="post">
                     <div class="mb-3">
-                        <input type="email" class="form-control" id="patientEmail" name="patientEmail" placeholder="Enter patient's email" required>
+                        <input type="email" class="form-control form-control-lg" id="patientEmail" name="patientEmail" placeholder="Enter patient's email" required>
                     </div>
                     <div class="mb-3">
-                        <textarea class="form-control" id="comments" name="comments" placeholder="Enter your comments here" required></textarea>
+                        <textarea class="form-control form-control-lg" id="comments" name="comments" rows="3" placeholder="Enter your comments here" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
                 </form>
             </div>
         </div>
