@@ -1,8 +1,5 @@
 # Welcome to SkinCheck!
 
-SINCE OUR PROJECT IS TOO LARGE (158MB) DUE TO OUR ML MODELS, WE UPLOADED IT TO A DRIVE. HERE IS THE LINK: https://drive.google.com/drive/folders/1vLkRnViJb4GqXLUfVDD0isUTNlUsKC9O?usp=sharing 
-
-
 VIDEO: https://youtu.be/UXG4kgdTNvQ 
 
 To run this website, make sure you are in the SkinCheck directory (through cd statements). Then, on Mac, activate the virtual environment with source .venv/bin/activate then execute “flask run”. Then, all you need to do is click the link that shows up! 
